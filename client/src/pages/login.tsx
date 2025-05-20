@@ -52,12 +52,17 @@ export default function Login() {
     setIsLoading(true);
     
     try {
-      await login(data.email, data.password);
-      toast({
-        title: "Login successful",
-        description: "You are now logged in.",
-      });
-      navigate("/weather");
+      // Check if using the test credentials
+      if (data.email === "eve.holt@reqres.in") {
+        await login(data.email, data.password);
+        toast({
+          title: "Login successful",
+          description: "You are now logged in.",
+        });
+        navigate("/weather");
+      } else {
+        throw new Error("Please use the test credentials provided below");
+      }
     } catch (error) {
       let errorMessage = "Invalid email or password";
       if (error instanceof Error) {
