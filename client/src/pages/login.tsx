@@ -70,10 +70,10 @@ export default function Login() {
   }
 
   return (
-    <div className="max-w-md mx-auto fade-in">
+    <div className="w-full max-w-md mx-auto fade-in px-4 sm:px-0">
       <Card className="bg-white rounded-lg shadow-md">
-        <CardContent className="p-6">
-          <h2 className="text-2xl font-medium text-gray-800 mb-6">Login</h2>
+        <CardContent className="p-4 sm:p-6">
+          <h2 className="text-xl sm:text-2xl font-medium text-gray-800 mb-4 sm:mb-6 text-center sm:text-left">Login</h2>
           
           {loginError && (
             <Alert variant="destructive" className="mb-4 p-3 rounded text-sm font-medium bg-error bg-opacity-10 text-error border border-error">
@@ -149,7 +149,7 @@ export default function Login() {
                 )}
               </Button>
 
-              <div className="text-sm text-neutral-400 mt-4">
+              <div className="text-sm text-neutral-400 mt-4 text-center sm:text-left">
                 <p>
                   Use <span className="text-primary">eve.holt@reqres.in</span> with password <span className="text-primary">cityslicka</span> for testing.
                 </p>

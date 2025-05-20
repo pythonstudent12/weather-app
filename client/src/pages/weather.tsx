@@ -103,21 +103,21 @@ export default function Weather() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto fade-in">
+    <div className="w-full max-w-4xl mx-auto fade-in px-4 sm:px-0">
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         {/* Weather Header */}
-        <div className="bg-accent p-6 text-white">
-          <h2 className="text-2xl font-medium mb-2">
+        <div className="bg-accent p-4 sm:p-6 text-white">
+          <h2 className="text-xl sm:text-2xl font-medium mb-2 text-center sm:text-left">
             {data?.location || "Loading location..."}
           </h2>
-          <div className="flex items-center">
-            <Calendar className="w-5 h-5 mr-2" />
-            <span>{data?.date || "Loading date..."}</span>
+          <div className="flex items-center justify-center sm:justify-start">
+            <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+            <span className="text-sm sm:text-base">{data?.date || "Loading date..."}</span>
           </div>
         </div>
 
         {/* Weather Content */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Weather Loading State */}
           {isLoading && (
             <div className="py-12 flex justify-center items-center text-neutral-400">
@@ -129,46 +129,48 @@ export default function Weather() {
           {!isLoading && !error && data && (
             <div>
               {/* Current Weather */}
-              <div className="lg:flex items-center mb-8 border-b border-neutral-200 pb-6">
-                <div className="flex-1 flex items-center justify-center lg:justify-start mb-4 lg:mb-0">
+              <div className="flex flex-col lg:flex-row items-center mb-6 sm:mb-8 border-b border-neutral-200 pb-6">
+                <div className="flex-1 flex items-center justify-center w-full lg:justify-start mb-4 lg:mb-0">
                   <div className="text-center lg:text-left">
                     <div className="flex items-center justify-center lg:justify-start">
-                      {getWeatherIcon(data.icon)}
-                      <span className="text-4xl font-light ml-2">{data.temperature}</span>
+                      <div className="float">
+                        {getWeatherIcon(data.icon)}
+                      </div>
+                      <span className="text-3xl sm:text-4xl font-light ml-2">{data.temperature}</span>
                     </div>
-                    <div className="text-lg text-neutral-400 mt-1 capitalize">{data.description}</div>
+                    <div className="text-md sm:text-lg text-neutral-400 mt-1 capitalize text-center lg:text-left">{data.description}</div>
                   </div>
                 </div>
 
-                <div className="flex-1">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="p-3 rounded-lg bg-neutral-100">
-                      <div className="text-sm text-neutral-400 flex items-center">
-                        <Droplets className="w-4 h-4 mr-1" />
+                <div className="flex-1 w-full">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-4">
+                    <div className="p-2 sm:p-3 rounded-lg bg-neutral-100">
+                      <div className="text-xs sm:text-sm text-neutral-400 flex items-center">
+                        <Droplets className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                         Humidity
                       </div>
-                      <div className="text-lg font-medium">{data.humidity}</div>
+                      <div className="text-md sm:text-lg font-medium">{data.humidity}</div>
                     </div>
-                    <div className="p-3 rounded-lg bg-neutral-100">
-                      <div className="text-sm text-neutral-400 flex items-center">
-                        <Wind className="w-4 h-4 mr-1" />
+                    <div className="p-2 sm:p-3 rounded-lg bg-neutral-100">
+                      <div className="text-xs sm:text-sm text-neutral-400 flex items-center">
+                        <Wind className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                         Wind
                       </div>
-                      <div className="text-lg font-medium">{data.wind}</div>
+                      <div className="text-md sm:text-lg font-medium">{data.wind}</div>
                     </div>
-                    <div className="p-3 rounded-lg bg-neutral-100">
-                      <div className="text-sm text-neutral-400 flex items-center">
-                        <Eye className="w-4 h-4 mr-1" />
+                    <div className="p-2 sm:p-3 rounded-lg bg-neutral-100">
+                      <div className="text-xs sm:text-sm text-neutral-400 flex items-center">
+                        <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                         Visibility
                       </div>
-                      <div className="text-lg font-medium">{data.visibility}</div>
+                      <div className="text-md sm:text-lg font-medium">{data.visibility}</div>
                     </div>
-                    <div className="p-3 rounded-lg bg-neutral-100">
-                      <div className="text-sm text-neutral-400 flex items-center">
-                        <Gauge className="w-4 h-4 mr-1" />
+                    <div className="p-2 sm:p-3 rounded-lg bg-neutral-100">
+                      <div className="text-xs sm:text-sm text-neutral-400 flex items-center">
+                        <Gauge className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                         Pressure
                       </div>
-                      <div className="text-lg font-medium">{data.pressure}</div>
+                      <div className="text-md sm:text-lg font-medium">{data.pressure}</div>
                     </div>
                   </div>
                 </div>
@@ -176,15 +178,15 @@ export default function Weather() {
 
               {/* Forecast Section */}
               <div>
-                <h3 className="text-lg font-medium mb-4">5-Day Forecast</h3>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                <h3 className="text-md sm:text-lg font-medium mb-3 sm:mb-4 text-center sm:text-left">5-Day Forecast</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3">
                   {data.forecast.map((day, index) => (
-                    <div key={index} className="p-3 rounded-lg bg-neutral-100 text-center">
-                      <div className="text-sm font-medium">{day.day}</div>
-                      <div className="my-2">
+                    <div key={index} className="p-2 sm:p-3 rounded-lg bg-neutral-100 text-center">
+                      <div className="text-xs sm:text-sm font-medium">{day.day}</div>
+                      <div className="my-1 sm:my-2 float">
                         {getWeatherIcon(day.icon)}
                       </div>
-                      <div className="text-sm">{day.temp}</div>
+                      <div className="text-xs sm:text-sm">{day.temp}</div>
                     </div>
                   ))}
                 </div>
@@ -194,17 +196,17 @@ export default function Weather() {
 
           {/* Weather Error */}
           {!isLoading && error && (
-            <div className="py-8 text-center">
+            <div className="py-6 sm:py-8 text-center">
               <div className="text-error mb-2">
-                <CloudOff className="w-10 h-10 mx-auto" />
+                <CloudOff className="w-8 h-8 sm:w-10 sm:h-10 mx-auto" />
               </div>
-              <h3 className="text-lg font-medium mb-2">Unable to Load Weather Data</h3>
-              <p className="text-neutral-400 text-sm">Please check your connection and try again.</p>
+              <h3 className="text-md sm:text-lg font-medium mb-2">Unable to Load Weather Data</h3>
+              <p className="text-neutral-400 text-xs sm:text-sm">Please check your connection and try again.</p>
               <Button 
                 onClick={() => refetch()} 
-                className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-opacity-90 transition-colors"
+                className="mt-3 sm:mt-4 px-3 sm:px-4 py-2 bg-primary text-white rounded hover:bg-opacity-90 transition-colors"
               >
-                <RefreshCw className="w-4 h-4 mr-2" />
+                <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 Retry
               </Button>
             </div>
