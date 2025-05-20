@@ -151,7 +151,7 @@ export default function Login() {
 
               <div className="text-sm text-neutral-400 mt-4">
                 <p>
-                  Use <span className="text-primary">eve.holt@reqres.in</span> with any password for testing.
+                  Use <span className="text-primary">eve.holt@reqres.in</span> with password <span className="text-primary">cityslicka</span> for testing.
                 </p>
               </div>
             </form>
