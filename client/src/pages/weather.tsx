@@ -106,13 +106,15 @@ export default function Weather() {
     <div className="w-full max-w-4xl mx-auto fade-in px-4 sm:px-0">
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         {/* Weather Header */}
-        <div className="bg-accent p-4 sm:p-6 text-white">
-          <h2 className="text-xl sm:text-2xl font-medium mb-2 text-center sm:text-left">
-            {data?.location || "Loading location..."}
-          </h2>
-          <div className="flex items-center justify-center sm:justify-start">
-            <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-            <span className="text-sm sm:text-base">{data?.date || "Loading date..."}</span>
+        <div className="bg-gradient-to-r from-accent to-primary p-5 sm:p-7 text-white">
+          <div className="text-center sm:text-left">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2 tracking-wide city-name">
+              {data?.location || "Loading location..."}
+            </h2>
+            <div className="flex items-center justify-center sm:justify-start">
+              <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+              <span className="text-sm sm:text-base">{data?.date || "Loading date..."}</span>
+            </div>
           </div>
         </div>
 
