@@ -5,7 +5,8 @@ interface LoginResponse {
 
 export async function login(email: string, password: string): Promise<string> {
   try {
-    const response = await fetch("https://reqres.in/api/login", {
+    // Add the API key to the URL
+    const response = await fetch("https://reqres.in/api/login?apiKey=reqres-free-v1", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
