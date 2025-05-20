@@ -106,7 +106,7 @@ export default function Weather() {
     <div className="w-full max-w-4xl mx-auto fade-in px-4 sm:px-0">
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         {/* Weather Header */}
-        <div className="bg-gradient-to-r from-accent to-primary p-5 sm:p-7 text-white">
+        <div className="bg-accent p-5 sm:p-7 text-white">
           <div className="text-center sm:text-left">
             <h2 className="text-2xl sm:text-3xl font-bold mb-2 tracking-wide city-name">
               {data?.location || "Loading location..."}
