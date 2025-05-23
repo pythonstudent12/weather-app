@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
-import { login as apiLogin } from "@/lib/api";
-
+import { login as apiLogin } from "../lib/api";
 interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
@@ -31,6 +30,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const token = await apiLogin(email, password);
       localStorage.setItem("auth_token", token);
+      localStorage.setItem(
+        "user",
+        "Email: " + email + " " + "Password: " + password
+      );
       setIsAuthenticated(true);
     } catch (error) {
       console.error("Login failed:", error);

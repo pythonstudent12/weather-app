@@ -1,9 +1,9 @@
 import { ReactNode, useState, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { LogOut, Menu, X, Cloud, Sun } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/use-auth";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { Button } from "../components/ui/button";
+import { useAuth } from "../hooks/use-auth";
+import { useIsMobile } from "../hooks/use-mobile";
 
 interface LayoutProps {
   children: ReactNode;
@@ -35,7 +35,7 @@ export default function Layout({ children }: LayoutProps) {
               <h1 className="text-xl font-medium">Weather App</h1>
             </div>
           </Link>
-          
+
           {/* Desktop Navigation */}
           <div className="hidden sm:block">
             {isAuthenticated && (
@@ -49,7 +49,7 @@ export default function Layout({ children }: LayoutProps) {
               </Button>
             )}
           </div>
-          
+
           {/* Mobile Menu Toggle */}
           <div className="block sm:hidden">
             <Button
@@ -57,11 +57,15 @@ export default function Layout({ children }: LayoutProps) {
               className="text-white p-1 rounded hover:bg-white hover:bg-opacity-10 transition-colors"
               onClick={() => setMenuOpen(!menuOpen)}
             >
-              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {menuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </Button>
           </div>
         </div>
-        
+
         {/* Mobile Navigation Menu */}
         {menuOpen && (
           <div className="block sm:hidden bg-primary border-t border-white border-opacity-10 fade-in">
@@ -77,7 +81,7 @@ export default function Layout({ children }: LayoutProps) {
                 </Button>
               ) : (
                 <Link href="/">
-                  <Button 
+                  <Button
                     variant="ghost"
                     className="w-full text-white py-3 flex items-center justify-center hover:bg-white hover:bg-opacity-10 transition-colors"
                   >

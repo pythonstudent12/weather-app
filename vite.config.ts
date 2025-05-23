@@ -1,9 +1,12 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { fileURLToPath } from "url";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  base: "/weather-app/",
   plugins: [
     react(),
     runtimeErrorOverlay(),
@@ -11,21 +14,33 @@ export default defineConfig({
     process.env.REPL_ID !== undefined
       ? [
           await import("@replit/vite-plugin-cartographer").then((m) =>
-            m.cartographer(),
+            m.cartographer()
           ),
         ]
       : []),
   ],
   resolve: {
-    alias: {
-      "@": path.resolve(import.meta.dirname, "client", "src"),
-      "@shared": path.resolve(import.meta.dirname, "shared"),
-      "@assets": path.resolve(import.meta.dirname, "attached_assets"),
-    },
+    alias: [
+      { find: "@", replacement: path.resolve(__dirname, "client/src") },
+      {
+        find: "@hooks",
+        replacement: path.resolve(__dirname, "client/src/hooks"),
+      },
+      {
+        find: "@components",
+        replacement: path.resolve(__dirname, "client/src/components"),
+      },
+      { find: "@lib", replacement: path.resolve(__dirname, "client/src/lib") },
+      { find: "@shared", replacement: path.resolve(__dirname, "shared") },
+      {
+        find: "@assets",
+        replacement: path.resolve(__dirname, "attached_assets"),
+      },
+    ],
   },
-  root: path.resolve(import.meta.dirname, "client"),
+  root: path.resolve(__dirname, "client"),
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
+    outDir: path.resolve(__dirname, "dist/public"),
     emptyOutDir: true,
   },
 });
