@@ -4,11 +4,7 @@ echo '<!DOCTYPE html>
     <meta charset="utf-8" />
     <title>Redirecting...</title>
     <script>
-      // Жесткий редирект с проверкой
-      const correctPath = "/weather-app/";
-      if (!location.pathname.startsWith(correctPath)) {
-        location.href = correctPath + location.pathname.replace(/^\//, "");
-      }
+      window.location.href = "/weather-app/";
     </script>
   </head>
   <body>
