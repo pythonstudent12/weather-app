@@ -4,7 +4,8 @@ echo '<!DOCTYPE html>
     <meta charset="utf-8" />
     <title>Redirecting...</title>
     <script>
-      window.location.href = "/weather-app/";
+      sessionStorage.redirect = location.pathname;
+      window.location.href = "/weather-app/index.html";
     </script>
   </head>
   <body>
