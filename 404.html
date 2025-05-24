@@ -1,14 +1,10 @@
-echo '<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8" />
-    <title>Redirecting...</title>
     <script>
-      window.location.href = "/weather-app/";
+      sessionStorage.redirect = location.pathname;
+      window.location.href = "/weather-app/index.html"; // Укажите ваш базовый путь
     </script>
   </head>
-  <body>
-    Redirecting to app...
-  </body>
+  <body></body>
 </html>
-' >
