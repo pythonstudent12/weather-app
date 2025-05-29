@@ -38,73 +38,96 @@ function formatPressure(pressure: number): string {
 
 // Get weather data from OpenWeatherMap API
 async function fetchWeatherData(
-  lat: number = 55.7558, // Москва по умолчанию
-  lon: number = 37.6173
+  lat: number = -22.9057,
+  lon: number = -43.1891
 ): Promise<WeatherData> {
+  const apiKey = process.env.OPENWEATHER_API_KEY;
+  if (!apiKey) {
+    throw new Error("OpenWeather API key is not configured");
+  }
+
+  // Создаем экземпляр axios с настройками
+  const apiClient = axios.create({
+    timeout: 10000, // 10 секунд таймаут
+    params: {
+      appid: apiKey,
+      lat,
+      lon,
+      units: "metric", // Используем метрическую систему
+    },
+  });
+
   try {
-    const apiKey = process.env.OPENWEATHER_API_KEY;
-    console.log("API Key:", apiKey);
+    // 1. Запрашиваем текущую погоду
 
-    if (!apiKey) {
-      throw new Error("OpenWeather API key is not configured");
+    const currentResponse = await apiClient.get(
+      "https://api.openweathermap.org/data/2.5/weather"
+    );
+    const API_KEY = "f3b5103f13f60b1d60e616a12b145d56";
+    const city = "London";
+    const apiUrl = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    clearTimeout(timeoutId);
+    // const currentResponse = await fetch(apiUrl);
+
+    // Проверяем структуру ответа
+    if (!currentResponse.data?.main || !currentResponse.data.weather?.[0]) {
+      throw new Error("Invalid current weather data structure");
     }
-    console.log("API Key:", process.env.OPENWEATHER_API_KEY);
 
-    // Current weather
-    const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-    const currentWeatherResponse = await axios.get(currentWeatherUrl);
-    const currentData = currentWeatherResponse.data;
+    const currentData = currentResponse.data;
+    console.log("Получение данных с сервера: " + currentData);
+    //надо вывести и посмотреть!
+    console.log(currentResponse.data);
 
-    // 5-day forecast (3-hour steps)
-    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-    const forecastResponse = await axios.get(forecastUrl);
+    // 2. Запрашиваем прогноз
+    //с fetch тоже не получается Weather API Error: TypeError: fetch failed
+    //не понятно почему вообще запрос на сервер не идет!ап
+    const forecastResponse = await apiClient.get(
+      "https://api.openweathermap.org/data/2.5/forecast"
+    );
+
+    if (!forecastResponse.data?.list) {
+      throw new Error("Invalid forecast data structure");
+    }
+
     const forecastData = forecastResponse.data;
 
-    // Process forecast data to get daily forecasts
-    const dailyForecasts: { [key: string]: any } = {};
-
-    // Process the forecast data (it comes in 3-hour increments)
-    forecastData.list.forEach((item: any) => {
+    // 3. Обрабатываем прогноз
+    const dailyForecasts = forecastData.list.reduce((acc: any, item: any) => {
       const date = new Date(item.dt * 1000);
       const dayKey = date.toISOString().split("T")[0];
 
-      // Only take the first entry for each day (around noon if possible)
-      if (
-        !dailyForecasts[dayKey] ||
-        Math.abs(date.getHours() - 12) <
-          Math.abs(new Date(dailyForecasts[dayKey].dt * 1000).getHours() - 12)
-      ) {
-        dailyForecasts[dayKey] = item;
+      if (!acc[dayKey] || date.getHours() === 12) {
+        acc[dayKey] = item;
       }
-    });
+      return acc;
+    }, {});
 
-    // Format the forecast data
     const forecast = Object.values(dailyForecasts)
       .slice(0, 5)
       .map((item: any) => {
         const date = new Date(item.dt * 1000);
-        const dayOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][
-          date.getDay()
-        ];
-
         return {
-          day: dayOfWeek,
+          day: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()],
           icon: item.weather[0].icon,
-          temp: kelvinToCelsius(item.main.temp),
+          temp: `${Math.round(item.main.temp)}°C`, // Уже в °C благодаря units=metric
         };
       });
 
+    // 4. Формируем итоговый объект
     const today = new Date();
-
     return {
-      location: `${currentData.name}, ${currentData.sys.country}`,
+      location: `${currentData.name}, ${currentData.sys?.country || ""}`.trim(),
       date: today.toLocaleDateString("en-US", {
         weekday: "long",
         year: "numeric",
         month: "long",
         day: "numeric",
       }),
-      temperature: kelvinToCelsius(currentData.main.temp),
+      temperature: `${Math.round(currentData.main.temp)}°C`,
       description: currentData.weather[0].description,
       icon: currentData.weather[0].icon,
       humidity: `${currentData.main.humidity}%`,
@@ -114,8 +137,13 @@ async function fetchWeatherData(
       forecast,
     };
   } catch (error) {
-    console.error("Error fetching weather data:", error);
-    throw error;
+    console.error("Weather API Error:", error);
+    throw new Error(
+      //он выдает ошибку для axios а не для fetch! надо посмотреть где и какая ошибка!
+      axios.isAxiosError(error)
+        ? `Weather API request failed: ${error.message}`
+        : "Failed to process weather data"
+    );
   }
 }
 
@@ -157,7 +185,7 @@ const getMockWeatherData = (): WeatherData => {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Weather API endpoint
-  app.get("/api/weather", async (req: Request, res: Response) => {
+  app.get("/weather", async (req: Request, res: Response) => {
     try {
       // Verify authorization
       const authHeader = req.headers.authorization;
@@ -165,9 +193,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ error: "Unauthorized" });
       }
 
-      // Get weather data from API
-      const weatherData = await fetchWeatherData();
-      res.json(weatherData);
+      console.log("Запрос к /api/weather получен");
+
+      try {
+        console.log("Пытаемся получить данные погоды...");
+        const weatherData = await fetchWeatherData();
+        console.log("Данные успешно получены");
+        res.json(weatherData);
+      } catch (error) {
+        console.error("Полная ошибка:", error);
+        res.status(500).json({
+          error: "Failed to fetch weather data",
+          details: error instanceof Error ? error.message : String(error),
+        });
+      }
     } catch (error) {
       console.error("Error in weather API:", error);
       res.status(500).json({

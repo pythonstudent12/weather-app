@@ -43,8 +43,17 @@ export default function Login() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/weather");
+      const timer = setTimeout(() => navigate("/weather"), 100);
+      return () => clearTimeout(timer);
+      console.log("isAuthenticated:", isAuthenticated); // Проверка после login
+      console.log("Trying to navigate to /weather");
     }
+    // if (!isAuthenticated) {
+    //   const timer = setTimeout(() => navigate(-1), 100);
+    //   return () => clearTimeout(timer);
+    //   console.log("isAuthenticated:", isAuthenticated); // Проверка после login
+    //   console.log("Trying to navigate to app");
+    // }
   }, [isAuthenticated, navigate]);
 
   async function onSubmit(data: LoginFormValues) {
@@ -57,7 +66,9 @@ export default function Login() {
         title: "Login successful",
         description: "You are now logged in.",
       });
-      navigate("/weather");
+      // navigate("/weather");
+      // console.log("isAuthenticatedввв:", isAuthenticated); // Проверка после login
+      // console.log("Trying to navigateввв to /weather");
     } catch (error) {
       let errorMessage = "Invalid email or password";
       if (error instanceof Error) {

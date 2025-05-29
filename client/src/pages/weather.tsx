@@ -78,19 +78,66 @@ const WEATHER_ICONS: Record<string, React.ReactNode> = {
 
 const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+const fetchWeatherData = async (): Promise<WeatherData> => {
+  const API_KEY = "f3b5103f13f60b1d60e616a12b145d56"; // Лучше вынести в .env
+  const city = "Moscow";
+
+  try {
+    // Вариант с fetch
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`
+    );
+
+    if (!response.ok) throw new Error("Weather data failed");
+
+    const currentData = await response.json();
+
+    const forecastResponse = await fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${API_KEY}`
+    );
+    const forecastData = await forecastResponse.json();
+
+    // Форматируем данные для компонента
+    return {
+      location: `${currentData.name}, ${currentData.sys?.country || ""}`,
+      date: new Date().toLocaleDateString(),
+      temperature: `${Math.round(currentData.main.temp)}°C`,
+      description: currentData.weather[0].description,
+      icon: currentData.weather[0].icon,
+      humidity: `${currentData.main.humidity}%`,
+      wind: `${currentData.wind.speed} m/s`,
+      visibility: `${(currentData.visibility / 1000).toFixed(1)} km`,
+      pressure: `${currentData.main.pressure} hPa`,
+      forecast: forecastData.list
+        .filter((_: any, index: number) => index % 8 === 0) // Берем по одному прогнозу в день
+        .slice(0, 5)
+        .map((item: any) => ({
+          day: DAYS_OF_WEEK[new Date(item.dt * 1000).getDay()],
+          icon: item.weather[0].icon,
+          temp: `${Math.round(item.main.temp)}°C`,
+        })),
+    };
+  } catch (error) {
+    console.error("Fetch error:", error);
+    throw error;
+  }
+};
+
 export default function Weather() {
   const [, navigate] = useLocation();
   const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/");
+      navigate("/weather-app");
     }
   }, [isAuthenticated, navigate]);
 
   const { data, isLoading, error, refetch } = useQuery<WeatherData>({
-    queryKey: ["/api/weather"],
+    queryKey: ["wea"],
+    queryFn: fetchWeatherData,
     refetchOnWindowFocus: false,
+    retry: 1,
   });
 
   if (!isAuthenticated) {

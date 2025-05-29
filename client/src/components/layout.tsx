@@ -4,6 +4,7 @@ import { LogOut, Menu, X, Cloud, Sun } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { useAuth } from "../hooks/use-auth";
 import { useIsMobile } from "../hooks/use-mobile";
+import { useToast } from "../hooks/use-toast";
 
 interface LayoutProps {
   children: ReactNode;
@@ -14,6 +15,7 @@ export default function Layout({ children }: LayoutProps) {
   const [location] = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const { toast } = useToast();
 
   // Close mobile menu when navigating
   useEffect(() => {
@@ -22,6 +24,10 @@ export default function Layout({ children }: LayoutProps) {
 
   const handleLogout = () => {
     logout();
+    toast({
+      title: "Logout",
+      description: "You are now log out",
+    });
   };
 
   return (

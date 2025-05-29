@@ -12,7 +12,7 @@ import Layout from "./components/layout";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Login} />
+      <Route path="/weather-app/" component={Login} />
       <Route path="/weather" component={Weather} />
       <Route component={NotFound} />
     </Switch>

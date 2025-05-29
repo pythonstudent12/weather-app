@@ -8,6 +8,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   base: "/weather-app/",
   plugins: [
+    {
+      name: "rewrite-all",
+      configureServer(server) {
+        server.middlewares.use((req, _, next) => {
+          if (!req.url?.startsWith("/weather-app") && !req.url?.includes(".")) {
+            req.url = "/weather-app/index.html";
+          }
+          next();
+        });
+      },
+    },
     react(),
     runtimeErrorOverlay(),
     ...(process.env.NODE_ENV !== "production" &&
@@ -38,9 +49,13 @@ export default defineConfig({
       },
     ],
   },
+  publicDir: "public", // Важно!
   root: path.resolve(__dirname, "client"),
   build: {
-    outDir: path.resolve(__dirname, "dist/public"),
-    emptyOutDir: true,
+    outDir: path.resolve(__dirname, "dist"),
+    copyPublicDir: true,
+    rollupOptions: {
+     input: path.resolve(__dirname, "client", "index.html")
+    },
   },
 });
